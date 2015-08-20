@@ -121,7 +121,7 @@ $(document).ready(function(){
                                 <div class="col-md-4 col-sm-4 col-xs-4"><h5>'+description+'</h5></div>\
                                 <div class="col-md-2 col-sm-2 col-xs-2 cart-row-padding"><input type="number" class="form-control" placeholder="Qty" value='+quantity+' id="quantity" min="1" max="999999999999" step=1 onkeypress="return isNumberKey(event)" style="width:100%"></div>\
                                 <div class="col-md-2 col-sm-2 col-xs-2"><h5>'+cost+'</h5></div>\
-                                <div class="col-md-1 col-sm-2 col-xs-2 cart-row-padding"><div class="cancel"><span class="glyphicon glyphicon-trash" style="padding-top:10px;"></span></div></div>\
+                                <div class="col-md-1 col-sm-2 col-xs-2 cart-row-padding"><div class="cancel"><button class="glyphicon glyphicon-trash btn btn-danger btn-sm" style="padding-top:10px;"></button></div></div>\
                                 </div>')
 
         }       
@@ -205,12 +205,12 @@ $(document).ready(function(){
         }
      })
 
-      $("[name=item][type=text]").keypress(function(){
-        return_flag = validate_for_vendor_selection_on_item_selection()
-        if (return_flag){
-          execute_item_search_span_trigger()  
-        }     
-      })
+      // $("[name=item][type=text]").keypress(function(){
+      //   // return_flag = validate_for_vendor_selection_on_item_selection()
+      //   // if (return_flag){
+      //   //   execute_item_search_span_trigger()  
+      //   // }     
+      // })
  
       $("[name=sub_category][type=text]").keypress(function(){
         execute_sub_category_search_span_trigger()         
@@ -524,21 +524,30 @@ function init_for_item_span_trigger(){
 }
 
 function execute_item_search_span_trigger(){
+    console.log("item search")
     if ($("[name=sub_category][type=text]").val() &&  !$("[name=vendor][type=text]").val()){
       item_list = get_item_against_this_sub_category($("[name=sub_category][type=text]").val())
-      init_for_sorted_item_rendering(item_list)
+      return item_list
+      // init_for_sorted_item_rendering(item_list)
     }
     else if($("[name=sub_category][type=text]").val()  &&  $("[name=vendor][type=text]").val() ){
       item_list = get_item_against_this_sub_category_and_vendor($("[name=sub_category][type=text]").val() ,$("[name=vendor][type=text]").val())
-      init_for_sorted_item_rendering(item_list)
+      return item_list
+      // init_for_sorted_item_rendering(item_list)
     }
     else if(!$("[name=sub_category][type=text]").val() && !$("[name=vendor][type=text]").val() ){
-      init_for_all_item_rendering()
+      var item_list = []
+      $.each($.jStorage.get("item"),function(index,value){
+         item_list.push(value.item_code)
+        })
+      return item_list
+      // init_for_all_item_rendering()
 
     }
     else if ($("[name=vendor][type=text]").val() && !$("[name=sub_category][type=text]").val() ){
       item_list = get_item_against_this_vendor($("[name=vendor][type=text]").val())
-      init_for_sorted_item_rendering(item_list)
+      return item_list
+      // init_for_sorted_item_rendering(item_list)
     }
 
 }
@@ -703,7 +712,7 @@ function validate_for_customer_and_vendor_selection(){
 
 
 function validate_for_vendor_selection_on_item_selection(){
-
+    console.log("vendor validate")
     if(!$("[name=vendor][type=text]").val()){
         show_message('Please Select Vendor for Item Selection',"Mandatory Field")
         return false

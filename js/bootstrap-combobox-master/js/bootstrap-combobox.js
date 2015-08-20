@@ -191,13 +191,16 @@
        $.each($.jStorage.get("customer"), function(index,e){ 
           if (e.customer_id == item){
             item += e.customer_name
+            return false
           }; 
         });
       }
       if (name=='item'){
        $.each($.jStorage.get("item"), function(index,e){ 
           if (e.item_code == item){
-            item += e.item_description + e.barcode
+            item += e.item_description + e.barcode;
+            return false
+
           }; 
         });
       }
@@ -277,16 +280,18 @@
     if (!this.disabled) { 
       if (this.$container.hasClass('combobox-selected')) {
         $(this.$button).find("span:first").attr("check","deactive")
-         this.validate_before_remove_trigger()
-          // this.clearTarget();
-          // this.triggerChange();
-          // this.clearElement();          
+         this.validate_before_remove_trigger()          
       } else {
          $(this.$button).find("span:first").attr("check","active")
         if (this.shown) {
           this.hide();
         } else {
+          console.log("lookup")
           this.clearElement();
+          if(this.$source.attr("id") == 'item'){
+            this.set_item_list()
+            
+          }
           this.lookup();
         }
       }
@@ -475,11 +480,30 @@
           }    
         default:
           this.clearTarget();
-          this.lookup();
+          if(this.$source.attr("id") == 'item'){
+            this.set_item_list()
+            
+          }
+          else if(this.$source.attr("id") != 'item'){
+            this.lookup();
+          }
+
       }
 
       e.stopPropagation();
       e.preventDefault();
+  }
+  , set_item_list:function(){
+       var return_flag = validate_for_vendor_selection_on_item_selection()
+        console.log("new code")
+        if (return_flag){
+          var item_list = execute_item_search_span_trigger()
+          console.log(item_list)
+          var data  = this.$source.data('combobox')
+          data.source = item_list
+          data.options.items = data.source.length;
+          this.lookup();  
+        }   
   }
 
   , check_if_backspace_or_delete_fired:function(){
@@ -541,6 +565,7 @@
      return this.each(function () {  
           var $this = $(this)
         , data = $this.data('combobox')
+        console.log($(this))
         if(data){
           // data.source = this.parse();
           data.source = item_list
