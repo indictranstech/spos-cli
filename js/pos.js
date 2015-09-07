@@ -75,7 +75,7 @@ $(document).ready(function(){
     append_all_items_to_select()
 
 
-   $('.combobox').combobox()
+   $('.combobox').combobox() // combo box plugin, to add the options into select tag
 
     if ($.jStorage.get("login_count") == 1){
        setTimeout(function () {waitingDialog.hide();},5000)
@@ -124,8 +124,7 @@ $(document).ready(function(){
                                 <div class="col-md-1 col-sm-2 col-xs-2 cart-row-padding"><div class="cancel"><button class="glyphicon glyphicon-trash btn btn-danger btn-sm" style="padding-top:10px;"></button></div></div>\
                                 </div>')
 
-        }       
-       
+        }
        $('#exampleModal').modal('hide')
         calculate_grand_total()
     })
@@ -524,7 +523,6 @@ function init_for_item_span_trigger(){
 }
 
 function execute_item_search_span_trigger(){
-    console.log("item search")
     if ($("[name=sub_category][type=text]").val() &&  !$("[name=vendor][type=text]").val()){
       item_list = get_item_against_this_sub_category($("[name=sub_category][type=text]").val())
       return item_list
@@ -712,7 +710,6 @@ function validate_for_customer_and_vendor_selection(){
 
 
 function validate_for_vendor_selection_on_item_selection(){
-    console.log("vendor validate")
     if(!$("[name=vendor][type=text]").val()){
         show_message('Please Select Vendor for Item Selection',"Mandatory Field")
         return false
@@ -910,7 +907,7 @@ function clear_accounting_data_after_submission(){
   execute_vendor_remove_span_trigger()
   $("[name=vendor][type=hidden]").parent().removeClass("combobox-selected")
   $("[name=vendor][type=text]").val("")
-
+  $('#grand_total').text("0") 
 }
 
 
